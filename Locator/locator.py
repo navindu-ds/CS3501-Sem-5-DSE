@@ -74,3 +74,6 @@ def get_status_of_bus(raw_bus_location):
         halt_status[next_stop] = 1
     
     return combine_halt_segment_lists(halt_status, segment_status)
+
+def read_data_point(datapoint):
+    return get_status_of_bus((datapoint['latitude'], datapoint['longitude']))
