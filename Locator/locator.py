@@ -17,7 +17,7 @@ for i in k2d_halts.index:
 bus_halt_gdf = gpd.GeoDataFrame(geometry=[Point(location) for location in bus_halt_locations])
 
 halt_status = [0]*len(bus_halt_locations)
-segment_status = [0]*(len(bus_halt_locations) + 1)
+segment_status = [0]*(len(bus_halt_locations) - 1)
 
 def get_nearest_two_halts(bus_location, bus_halt_locations):
     # Calculate distances to all bus halt locations
@@ -34,7 +34,7 @@ def clear_halt_status():
     return [0]*(len(bus_halt_locations))
 
 def clear_segment_status():
-    return [0]*(len(bus_halt_locations)+1)
+    return [0]*(len(bus_halt_locations)-1)
 
 def clear_halt_segment_status():
     return clear_halt_status(), clear_segment_status()
@@ -67,10 +67,10 @@ def get_status_of_bus(bus_location):
     next_stop = max(segment)
 
     if(not(reached_halt(bus_location, next_stop))):
-        segment_status , halt_status = clear_halt_segment_status()
+        halt_status , segment_status = clear_halt_segment_status()
         segment_status[min(segment)] = 1
     else:
-        segment_status , halt_status = clear_halt_segment_status()
+        halt_status , segment_status = clear_halt_segment_status()
         halt_status[next_stop] = 1
     
     return combine_halt_segment_lists(halt_status, segment_status)
