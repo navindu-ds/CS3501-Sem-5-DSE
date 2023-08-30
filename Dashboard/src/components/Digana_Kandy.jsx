@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import busIcon from "../data/bus-20.png";
+import "../pages/MainPage.css";
 
 const Kandy_Digana = () => {
   const svgRef = useRef();
@@ -238,31 +239,35 @@ const Kandy_Digana = () => {
     svg
       .append("image")
       .attr("xlink:href", busIcon)
-      .attr("x", xScale(busPoint1.x) - 10) // Offset so the center of the icon is at the point
-      .attr("y", yScale(busPoint1.y) - 10)
-      .attr("width", 20)
-      .attr("height", 20);
+      .attr("class", "blinking-icon")
+      .attr("x", xScale(busPoint1.x) - 12) // Offset so the center of the icon is at the point
+      .attr("y", yScale(busPoint1.y) - 12)
+      .attr("width", 25)
+      .attr("height", 25);
     svg
       .append("image")
       .attr("xlink:href", busIcon)
-      .attr("x", xScale(busPoint2.x) - 10) // Offset so the center of the icon is at the point
-      .attr("y", yScale(busPoint2.y) - 10)
-      .attr("width", 20)
-      .attr("height", 20);
+      .attr("class", "blinking-icon")
+      .attr("x", xScale(busPoint2.x) - 12) // Offset so the center of the icon is at the point
+      .attr("y", yScale(busPoint2.y) - 12)
+      .attr("width", 25)
+      .attr("height", 25);
     svg
       .append("image")
       .attr("xlink:href", busIcon)
-      .attr("x", xScale(busPoint3.x) - 10) // Offset so the center of the icon is at the point
-      .attr("y", yScale(busPoint3.y) - 10)
-      .attr("width", 20)
-      .attr("height", 20);
+      .attr("class", "blinking-icon")
+      .attr("x", xScale(busPoint3.x) - 12) // Offset so the center of the icon is at the point
+      .attr("y", yScale(busPoint3.y) - 12)
+      .attr("width", 25)
+      .attr("height", 25);
     svg
       .append("image")
       .attr("xlink:href", busIcon)
-      .attr("x", xScale(busPoint4.x) - 10) // Offset so the center of the icon is at the point
-      .attr("y", yScale(busPoint4.y) - 10)
-      .attr("width", 20)
-      .attr("height", 20);
+      .attr("class", "blinking-icon")
+      .attr("x", xScale(busPoint4.x) - 12) // Offset so the center of the icon is at the point
+      .attr("y", yScale(busPoint4.y) - 12)
+      .attr("width", 25)
+      .attr("height", 25);
     return () => clearInterval(interval);
   }, [timeArray]);
 
