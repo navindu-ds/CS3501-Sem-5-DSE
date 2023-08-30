@@ -77,3 +77,14 @@ def get_status_of_bus(raw_bus_location):
 
 def read_data_point(datapoint):
     return get_status_of_bus((datapoint['latitude'], datapoint['longitude']))
+
+## inputs a portion of the csv containing GPS data 
+    # and selects the buses at that time
+def get_buses_and_datapoints(df):
+    data = df.sort_values(by='devicetime')
+    unique_buses = data.deviceid.unique()
+    unique_datapoints = []
+    for bus in unique_buses:
+        row = data.loc[data.deviceid == bus][::-1].iloc[0]
+        unique_datapoints.append(row)
+    return unique_buses, unique_datapoints
