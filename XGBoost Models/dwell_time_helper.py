@@ -1,13 +1,18 @@
 import numpy as np
 import pandas as pd
 from xgboost import XGBRegressor, XGBClassifier
+from sklearn.preprocessing import LabelEncoder
 
 # list of columns used for variables
 list_of_col = ['deviceid','bus_stop','direction','stop_type',
             'day_of_week','month','day',
             'time_of_day',
             'dt(w-1)','dt(w-2)','dt(w-3)','dt(t-1)','dt(t-2)','dt(n-1)','dt(n-2)','dt(n-3)','rt(n-1)',
-            'precip','windspeed']
+            'precip','temp']
+
+bus_stop_data = pd.read_csv("data/bus_stop_times_feature_added_all.csv")
+label_encoder = LabelEncoder()
+bus_stop_data['stop_type'] = label_encoder.fit_transform(bus_stop_data['stop_type'])
 
 def get_list_cols():
     return list_of_col
@@ -67,7 +72,7 @@ def get_last_stop(bus_stop):
     if bus_stop <= 114:
         return 114
     else:
-        return None
+        return 0
     
 def get_dwell_models(bus_stop_data):
     date = '2022-10-15'
@@ -110,3 +115,54 @@ def get_dwell_models(bus_stop_data):
     reg_model.fit(train_X_reg, train_y_reg)
 
     return classifier, reg_model
+
+def get_next_halt(segment):
+    if segment < 15:
+        return (segment - 1) + 101
+    else: 
+        return 200
+    
+def get_dwell_fea(prev_run_features, prev_dwell_features, next_stop, prev_run, week_no):
+    features = {key: 0 for key in list_of_col}
+
+    features['deviceid'] = prev_run_features['deviceid']
+    features['bus_stop'] = next_stop
+    features['direction'] = prev_run_features['direction']
+    features['stop_type'] = search_stop_type(bus_stop_data, next_stop)
+    features['day_of_week'] = prev_run_features['day_of_week']
+    features['month'] = prev_run_features['month']
+    features['day'] = prev_run_features['day']
+    features['time_of_day'] = prev_run_features['time_of_day']
+    features['precip'] = prev_run_features['precip']
+    features['temp'] = prev_run_features['temp']
+
+    timeslot = features['time_of_day']
+
+    # update dt(t-k) values
+    features['dt(t-1)'] = searching_historical_avg_time(bus_stop_data, timeslot - 0.25, features['bus_stop'])
+    features['dt(t-2)'] = searching_historical_avg_time(bus_stop_data, timeslot - 0.5, features['bus_stop'])
+
+    # update dt(w-k) values
+    if week_no > 3:
+        features['dt(w-1)'] = searching_historical_weekly_avg_time(bus_stop_data, week_no - 1, features['bus_stop'], timeslot)
+        features['dt(w-2)'] = searching_historical_weekly_avg_time(bus_stop_data, week_no - 2, features['bus_stop'], timeslot)
+        features['dt(w-3)'] = searching_historical_weekly_avg_time(bus_stop_data, week_no - 3, features['bus_stop'], timeslot)
+    elif week_no > 2:
+        features['dt(w-1)'] = searching_historical_weekly_avg_time(bus_stop_data, week_no - 1, features['bus_stop'], timeslot)
+        features['dt(w-2)'] = searching_historical_weekly_avg_time(bus_stop_data, week_no - 2, features['bus_stop'], timeslot)
+        features['dt(w-3)'] = features['dt(w-2)']
+    elif week_no > 1:
+        features['dt(w-1)'] = searching_historical_weekly_avg_time(bus_stop_data, week_no - 1, features['bus_stop'], timeslot)
+        features['dt(w-2)'] = features['dt(w-1)']
+        features['dt(w-3)'] = features['dt(w-2)']
+    else:
+        features['dt(w-1)'] = searching_historical_weekly_avg_time(bus_stop_data, week_no, features['bus_stop'], timeslot)
+        features['dt(w-2)'] = features['dt(w-1)']
+        features['dt(w-3)'] = features['dt(w-2)']
+
+    features['dt(n-3)'] = prev_dwell_features['dt(n-2)']
+    features['dt(n-2)'] = prev_dwell_features['dt(n-1)']
+    features['dt(n-1)'] = prev_run_features['dt(n-1)']
+    features['rt(n-1)'] = prev_run
+
+    return features
