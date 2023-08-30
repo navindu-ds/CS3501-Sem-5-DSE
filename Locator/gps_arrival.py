@@ -18,17 +18,25 @@ for i in k2d_halts.index:
     location = (row['latitude'], row['longitude'])
     bus_halt_locations.append(location)
 
-# function to use the data_point to check if the bus arrived to its next stop
-def is_arrived_next(data_point):
+def get_next_stop(data_point):
     bus_location = Point((data_point['latitude'], data_point["longitude"]))
 
-    next_stop = max(locator.get_nearest_two_halts(bus_location,  bus_halt_locations))
+    return max(locator.get_nearest_two_halts(bus_location,  bus_halt_locations))
 
-    return locator.reached_halt(bus_location, next_stop)
+# function to use the data_point to check if the bus arrived to its next stop
+def is_arrived_at_halt(data_point):
+    bus_location = Point((data_point['latitude'], data_point["longitude"]))
+
+    next_stop = get_next_stop(data_point)
+
+    return locator.reached_halt(bus_location, next_stop) , next_stop
 
 # if the bus has arrived returns the arrival time and if not returns None
-def check_arrival_time(samp_data_point):
-    if (is_arrived_next):
-        return samp_data_point['devicetime']
+def check_arrival_time_and_halt(data_point):
+    arrival_status = is_arrived_at_halt(data_point)
+    is_arrived = arrival_status[0]
+    bus_halt = arrival_status[1]
+    if (is_arrived):
+        return data_point['devicetime'] , bus_halt
     else:
         return None
