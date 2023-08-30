@@ -7,7 +7,11 @@ list_of_col_run = ['deviceid','segment','length','direction',
 'month','day','day_of_week',
 'time_of_day',
 'dt(n-1)','rt(w-1)','rt(w-2)','rt(w-3)','rt(t-1)','rt(t-2)','rt(n-1)','rt(n-2)','rt(n-3)',
-'precip','windspeed']
+'precip','temp']
+
+bus_run_data = pd.read_csv("data/bus_running_times_feature_added_all.csv")
+bus_run_data = bus_run_data.dropna(subset=['run_time_in_seconds'])
+bus_run_data = bus_run_data.loc[bus_run_data.direction ==1]
 
 def get_list_cols():
     return list_of_col_run
@@ -127,3 +131,48 @@ def get_run_model(bus_run_data):
     model_run.fit(train_X_run, train_y_run)
 
     return model_run
+
+def get_run_fea(prev_run_features, prev_dwell_features, prev_dwell, prev_run, week_no):
+    features = {key: 0 for key in list_of_col_run}
+
+    features['deviceid'] = prev_dwell_features['deviceid']
+    features['segment'] = prev_run_features['segment'] + 1
+    features['length'] = search_segment_length(bus_run_data, features['segment'])
+    features['direction'] = prev_dwell_features['direction']
+    features['month'] = prev_dwell_features['month']
+    features['day'] = prev_dwell_features['day']
+    features['day_of_week'] = prev_dwell_features['day_of_week']
+    features['time_of_day'] = prev_dwell_features['time_of_day']
+    features['dt(n-1)'] = prev_dwell
+    features['precip'] = prev_dwell_features['precip']
+    features['temp'] = prev_dwell_features['temp']
+    
+    timeslot = features['time_of_day']
+
+    # update rt(t-k) values
+    features['rt(t-1)'] = searching_historical_avg_time(bus_run_data, timeslot - 0.25, features['segment'])
+    features['rt(t-2)'] = searching_historical_avg_time(bus_run_data, timeslot - 0.5, features['segment'])
+
+    # update rt(w-k) values
+    if week_no > 3:
+        features['rt(w-1)'] = searching_historical_weekly_avg_time(bus_run_data, week_no - 1, features['segment'], timeslot)
+        features['rt(w-2)'] = searching_historical_weekly_avg_time(bus_run_data, week_no - 2, features['segment'], timeslot)
+        features['rt(w-3)'] = searching_historical_weekly_avg_time(bus_run_data, week_no - 3, features['segment'], timeslot)
+    elif week_no > 2:
+        features['rt(w-1)'] = searching_historical_weekly_avg_time(bus_run_data, week_no - 1, features['segment'], timeslot)
+        features['rt(w-2)'] = searching_historical_weekly_avg_time(bus_run_data, week_no - 2, features['segment'], timeslot)
+        features['rt(w-3)'] = features['rt(w-2)']
+    elif week_no > 1:
+        features['rt(w-1)'] = searching_historical_weekly_avg_time(bus_run_data, week_no - 1, features['segment'], timeslot)
+        features['rt(w-2)'] = features['rt(w-1)']
+        features['rt(w-3)'] = features['rt(w-2)']
+    else:
+        features['rt(w-1)'] = searching_historical_weekly_avg_time(bus_run_data, week_no, features['segment'], timeslot)
+        features['rt(w-2)'] = features['rt(w-1)']
+        features['rt(w-3)'] = features['rt(w-2)']
+
+    features['rt(n-3)'] = prev_run_features['rt(n-2)']
+    features['rt(n-2)'] = prev_run_features['rt(n-1)']
+    features['rt(n-1)'] = prev_run
+
+    return features
