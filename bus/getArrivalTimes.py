@@ -1,7 +1,4 @@
 from datetime import datetime, timedelta
-from keras.models import load_model
-from get_runtime_pred import getRunTimePrediction
-from get_dwelltime_pred import getDwellTimePrediction
 
 import os
 import pandas as pd
@@ -56,7 +53,7 @@ def getRunPred():
 
 def getDwellPred():
     # Query the BusRunningPredictions table
-    queryset = BusRunningPredictions.objects.all()
+    queryset = BusDwellTimePredictions.objects.all()
 
     # Extract the data from the queryset
     data = []
@@ -71,7 +68,7 @@ def getDwellPred():
             obj.stop_107,
             obj.stop_108,
             obj.stop_109,
-            obj.stop_100,
+            obj.stop_110,
             obj.stop_111,
             obj.stop_112,
             obj.stop_113,
@@ -112,8 +109,8 @@ def getArrivalTimes(current_time,next_stop):
     d = getDwellPred()
     r = getRunPred()
 
-    t = '06:39:49'
-    stop = 101
+    t = current_time
+    stop = next_stop
 
     start_datetime = "2021-10-01 06:00:00"
     end_datetime = "2021-10-01 14:00:00"
@@ -160,3 +157,5 @@ def getArrivalTimes(current_time,next_stop):
                 if k > 4:
                     break
         return times
+
+# print(getArrivalTimes('06:39:49',101))

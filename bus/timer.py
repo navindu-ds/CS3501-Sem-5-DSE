@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import time
 from addPredictions import addRunTimePrediction, addDwellTimePrediction
+from UpdateDateTime import updateTime
 
 import mysql.connector
 
@@ -76,6 +77,7 @@ while current_time <= end_of_day:
         addDwellTimePrediction(dwell_model,new_datetime_str, str(current_time))
         print(current_time)
 
+    updateTime(str(current_time), str(start_date))
     print("Current time: " + str(current_time), minute, second)
 
     #------------------------------

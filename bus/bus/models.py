@@ -119,3 +119,10 @@ class BusDwellTimePredictions(models.Model):
 
     class Meta:
         db_table = 'bus_dwell_time_predictions'
+
+class DateAndTime(models.Model):
+    date = models.DateField()
+    time = models.TimeField()
+
+    class Meta:
+        db_table = 'date_and_time'
