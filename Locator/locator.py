@@ -59,8 +59,8 @@ def combine_halt_segment_lists(halt_status, segment_status):
     # 3rd element - segment between bus halt 1 and bus halt 2
     # 4th element - bus halt 2
     # and so on...
-def get_status_of_bus(bus_location):
-    bus_location = Point(bus_location)
+def get_status_of_bus(raw_bus_location):
+    bus_location = Point(raw_bus_location)
 
     segment = list(get_nearest_two_halts(bus_location, bus_halt_locations))
 
