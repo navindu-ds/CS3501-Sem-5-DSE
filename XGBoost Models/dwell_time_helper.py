@@ -1,5 +1,16 @@
 import numpy as np
 import pandas as pd
+from xgboost import XGBRegressor, XGBClassifier
+
+# list of columns used for variables
+list_of_col = ['deviceid','bus_stop','direction','stop_type',
+            'day_of_week','month','day',
+            'time_of_day',
+            'dt(w-1)','dt(w-2)','dt(w-3)','dt(t-1)','dt(t-2)','dt(n-1)','dt(n-2)','dt(n-3)','rt(n-1)',
+            'precip','windspeed']
+
+def get_list_cols():
+    return list_of_col
 
 def searching_historical_avg_time(dataset, time_of_day, bus_stop):
     data = pd.DataFrame(dataset.groupby(['time_of_day','bus_stop']).dwell_time_in_seconds.mean())
@@ -58,3 +69,44 @@ def get_last_stop(bus_stop):
     else:
         return None
     
+def get_dwell_models(bus_stop_data):
+    date = '2022-10-15'
+    train = bus_stop_data.loc[bus_stop_data.date < date]
+    test = bus_stop_data.loc[bus_stop_data.date >= date]
+        
+    # Training Data
+    # Split data into features and target
+    train_X = train[list_of_col]
+    train_y = train['dwell_time_in_seconds']
+
+    # Testing Data
+    # Split data into features and target
+    test_X = test[list_of_col]
+    test_y = test['dwell_time_in_seconds']
+
+    classifier = XGBClassifier(
+        n_estimators=100,
+        learning_rate=0.1,
+        max_depth=5,
+        objective='reg:squarederror',
+        random_state=42)
+
+    classifier.fit(train_X, np.where(train_y > 0 , 1, 0))
+
+    cl_train_y_pred = classifier.predict(train_X)
+
+    train_X_reg = train_X.loc[cl_train_y_pred == 1]
+    train_y_reg = train_y.loc[cl_train_y_pred == 1]
+
+    # Train a model to predict dwell times for the next segment
+    reg_model = XGBRegressor(
+        n_estimators=100,
+        learning_rate=0.1,
+        max_depth=5,
+        objective='reg:squarederror',
+        random_state=42
+    )
+
+    reg_model.fit(train_X_reg, train_y_reg)
+
+    return classifier, reg_model

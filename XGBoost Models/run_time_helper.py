@@ -1,5 +1,16 @@
 import pandas as pd
 import numpy as np
+from xgboost import XGBRegressor, XGBClassifier
+
+# list of columns used for variables
+list_of_col_run = ['deviceid','segment','length','direction',
+'month','day','day_of_week',
+'time_of_day',
+'dt(n-1)','rt(w-1)','rt(w-2)','rt(w-3)','rt(t-1)','rt(t-2)','rt(n-1)','rt(n-2)','rt(n-3)',
+'precip','windspeed']
+
+def get_list_cols():
+    return list_of_col_run
 
 def searching_historical(data, time_of_day, segment):
     try:
@@ -88,3 +99,31 @@ def get_last_segment(segment):
         return 34
     else:
         return None
+    
+def get_run_model(bus_run_data):
+    ## Splitting date for training and test data
+    date = '2022-10-15'
+    train_run = bus_run_data.loc[bus_run_data.date < date]
+    test_run = bus_run_data.loc[bus_run_data.date >= date]
+
+    # Training Data
+    # Split data into features and target
+    train_X_run = train_run[list_of_col_run]
+    train_y_run = train_run['run_time_in_seconds']
+    # Testing Data
+    # Split data into features and target
+    test_X_run = test_run[list_of_col_run]
+    test_y_run = test_run['run_time_in_seconds']
+
+    # Train a model to predict running times for the next segment
+    model_run = XGBRegressor(
+        n_estimators=100,
+        learning_rate=0.1,
+        max_depth=5,
+        objective='reg:squarederror',
+        random_state=42
+    )
+
+    model_run.fit(train_X_run, train_y_run)
+
+    return model_run
