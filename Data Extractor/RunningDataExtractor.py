@@ -67,27 +67,6 @@ def getAvgRuntimeWithSegment(dataframe, time_step,start_time,end_time,min):
     df_avg_run_time = pd.DataFrame(data, columns=['date', 'start_time', 'segment', 'avg_run_time'])
     return df_avg_run_time
 
-# def handleOutliers(df):
-#     # Calculate the median of avg_run_time
-#     median_avg_run_time = df['avg_run_time'].median()
-
-#     # Calculate the absolute deviations
-#     df['abs_deviation'] = np.abs(df['avg_run_time'] - median_avg_run_time)
-
-#     # Calculate the median absolute deviation (MAD)
-#     mad = df['abs_deviation'].median()
-
-#     # Set a threshold (for example, 3 times MAD) to identify outliers
-#     threshold = 1.5 * mad
-
-#     # Replace outliers with the median value
-#     df.loc[df['abs_deviation'] > threshold, 'avg_run_time'] = median_avg_run_time
-
-#     # Drop the temporary column
-#     df = df.drop(columns=['abs_deviation'])
-
-#     return df
-
 def fillTimeSteps(df_avg_run_time, startTime, endTime, time_step, num_segments):
     start_Time = pd.to_datetime(startTime).time()
 
@@ -153,6 +132,16 @@ df = fillTimeSteps(df, start_time, end_time, time_step, segments)
 # Pivot the DataFrame
 pivoted_df = df.pivot_table(index=['date', 'start_time'], columns='segment', values='avg_run_time', aggfunc='first')
 
+avg_run_df = pivoted_df.reset_index()
+avg_run_df['date'] = avg_run_df.apply(lambda x: pd.datetime.combine(x['date'], x['start_time']), axis=1)
+avg_run_df = avg_run_df.drop("start_time",axis=1)
+
+# file location to save Dataset
+filename = 'avg_run_dir' + str(direction) + '.csv'
+processed_data_file = os.path.join(dataSet_location, filename)
+
+avg_run_df.to_csv(processed_data_file,index=False)
+
 # Get the list of integer column names (segments)
 segment_columns = pivoted_df.columns
 
@@ -168,10 +157,10 @@ pivoted_df['date'] = pivoted_df.apply(lambda x: pd.datetime.combine(x['date'], x
 pivoted_df = pivoted_df.drop("start_time",axis=1)
 
 # file location of the Saved Dataset
-filename = 'running_dir' + str(direction) + '.csv'
-processed_data_file = os.path.join(dataSet_location, filename)
+# filename = 'running_dir' + str(direction) + '.csv'
+# processed_data_file = os.path.join(dataSet_location, filename)
 
-pivoted_df.to_csv(processed_data_file,index=False)
+# pivoted_df.to_csv(processed_data_file,index=False)
 
 def handlingZeros(df):
     df['date'] = pd.to_datetime(df['date'])
