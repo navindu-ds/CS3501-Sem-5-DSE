@@ -156,12 +156,6 @@ pivoted_df = pivoted_df.reset_index()
 pivoted_df['date'] = pivoted_df.apply(lambda x: pd.datetime.combine(x['date'], x['start_time']), axis=1)
 pivoted_df = pivoted_df.drop("start_time",axis=1)
 
-# file location of the Saved Dataset
-# filename = 'running_dir' + str(direction) + '.csv'
-# processed_data_file = os.path.join(dataSet_location, filename)
-
-# pivoted_df.to_csv(processed_data_file,index=False)
-
 def handlingZeros(df):
     df['date'] = pd.to_datetime(df['date'])
     df['weekday'] = df['date'].dt.dayofweek
@@ -197,7 +191,7 @@ def handlingOutliers(df, stdev_num):
     return df
 
 processed_df = handlingZeros(pivoted_df)
-processed_df = handlingOutliers(pivoted_df,3)
+processed_df = handlingOutliers(processed_df,3)
 
 # file location of the Saved Dataset
 filename2 = 'processed_running_dir' + str(direction) + '.csv'
