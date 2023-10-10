@@ -21,8 +21,8 @@ busses_new.dropna(inplace=True)
 # parameters to generate the average running times
 segments = 15 # number of segments in the route 
 time_step = 15 # in minutes
-previous_steps = 16 # number of time steps used to predict 
-pred_steps = 2 # number of time steps to predict
+# previous_steps = 16 # number of time steps used to predict 
+# pred_steps = 2 # number of time steps to predict
 min = 0
 direction = 1
 start_time = '06:00:00' # starting time of the time slots
