@@ -142,3 +142,60 @@ filename = 'avg_dwell_dir' + str(direction) + '.csv'
 processed_data_file = os.path.join(dataSet_location, filename)
 
 avg_dwell_df.to_csv(processed_data_file,index=False)
+
+# Get the list of integer column names (bus stops)
+bus_stop_columns = pivoted_df.columns
+
+# Initialize the MinMaxScaler
+scaler = MinMaxScaler()
+
+# Loop through each stop column and normalize it
+for stop in bus_stop_columns:
+    pivoted_df[stop] = scaler.fit_transform(pivoted_df[stop].values.reshape(-1, 1))
+
+pivoted_df = pivoted_df.reset_index()
+pivoted_df['date'] = pivoted_df.apply(lambda x: pd.datetime.combine(x['date'], x['arrival_time']), axis=1)
+pivoted_df = pivoted_df.drop("arrival_time",axis=1)
+
+def handlingZeros(df):
+    df['date'] = pd.to_datetime(df['date'])
+    df['weekday'] = df['date'].dt.dayofweek
+    df['time'] = df['date'].dt.time
+
+    # Loop over each stop column
+    for col in df.columns[1:-2]:
+        # Group by weekday and time slot
+        grouped = df.groupby(['weekday', 'time'])
+
+        # Define a function to apply to each group
+        def replace_zeros(group):
+            nonzero_mean = group[group != 0].mean()
+            if pd.notnull(nonzero_mean):
+                return group.replace(0, nonzero_mean)
+            else:
+                return group
+
+        # Apply the function to each group in the specific segment column
+        df[col] = grouped[col].transform(replace_zeros)
+
+    return df
+
+def handlingOutliers(df, stdev_num):
+    # Assuming 'df' is your DataFrame
+    for col in df.columns:
+        if np.issubdtype(df[col].dtype, np.number):  # check if column is numeric
+            mean = df[col].mean()
+            std = df[col].std()
+            median = df[col].median()
+            outliers = (df[col] - mean).abs() > stdev_num*std
+            df.loc[outliers, col] = median
+    return df
+
+processed_df = handlingZeros(pivoted_df)
+processed_df = handlingOutliers(processed_df,3)
+
+# file location of the Saved Dataset
+filename2 = 'processed_dwell_dir' + str(direction) + '.csv'
+processed_data_file = os.path.join(dataSet_location, filename2)
+
+processed_df.to_csv(processed_data_file,index=False)
