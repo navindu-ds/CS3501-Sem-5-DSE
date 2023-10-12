@@ -136,11 +136,32 @@ avg_run_df = pivoted_df.reset_index()
 avg_run_df['date'] = avg_run_df.apply(lambda x: pd.datetime.combine(x['date'], x['start_time']), axis=1)
 avg_run_df = avg_run_df.drop("start_time",axis=1)
 
+avg_run_df['date2'] = avg_run_df['date'].dt.date
+avg_run_df['hour'] = avg_run_df['date'].dt.hour
+
+weatherFile = os.path.join(dataSet_location,'weather_data_kandy.csv')
+weatherData = pd.read_csv(weatherFile)
+
+weatherData.rename(columns={'temperature_2m (°C)': 'temp'}, inplace=True)
+weatherData.rename(columns={'rain (mm)': 'precip'}, inplace=True)
+weatherData.rename(columns={'windspeed_10m (km/h)': 'windspeed'}, inplace=True)
+
+weatherData['time'] = pd.to_datetime(weatherData['time'])
+weatherData['date2'] = weatherData['time'].dt.date
+weatherData['hour'] = weatherData['time'].dt.hour
+
+merged_df = pd.merge(avg_run_df, weatherData, on=['date2', 'hour'], how='left')
+
+final_cols = ['date', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 'temp', 'precip', 'windspeed']
+merged_df = merged_df[final_cols]
+
 # file location to save Dataset
 filename = 'avg_run_dir' + str(direction) + '.csv'
 processed_data_file = os.path.join(dataSet_location, filename)
 
-avg_run_df.to_csv(processed_data_file,index=False)
+merged_df.to_csv(processed_data_file,index=False)
+
+###############################################################################################################
 
 # Get the list of integer column names (segments)
 segment_columns = pivoted_df.columns

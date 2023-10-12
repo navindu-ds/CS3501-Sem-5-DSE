@@ -137,11 +137,30 @@ avg_dwell_df = pivoted_df.reset_index()
 avg_dwell_df['date'] = avg_dwell_df.apply(lambda x: pd.datetime.combine(x['date'], x['arrival_time']), axis=1)
 avg_dwell_df = avg_dwell_df.drop("arrival_time",axis=1)
 
+avg_dwell_df['date2'] = avg_dwell_df['date'].dt.date
+avg_dwell_df['hour'] = avg_dwell_df['date'].dt.hour
+
+weatherFile = os.path.join(dataSet_location,'weather_data_kandy.csv')
+weatherData = pd.read_csv(weatherFile)
+
+weatherData.rename(columns={'temperature_2m (°C)': 'temp'}, inplace=True)
+weatherData.rename(columns={'rain (mm)': 'precip'}, inplace=True)
+weatherData.rename(columns={'windspeed_10m (km/h)': 'windspeed'}, inplace=True)
+
+weatherData['time'] = pd.to_datetime(weatherData['time'])
+weatherData['date2'] = weatherData['time'].dt.date
+weatherData['hour'] = weatherData['time'].dt.hour
+
+merged_df = pd.merge(avg_dwell_df, weatherData, on=['date2', 'hour'], how='left')
+
+final_cols = ['date', 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 'temp', 'precip', 'windspeed']
+merged_df = merged_df[final_cols]
+
 # file location to save Dataset
 filename = 'avg_dwell_dir' + str(direction) + '.csv'
 processed_data_file = os.path.join(dataSet_location, filename)
 
-avg_dwell_df.to_csv(processed_data_file,index=False)
+merged_df.to_csv(processed_data_file,index=False)
 
 # Get the list of integer column names (bus stops)
 bus_stop_columns = pivoted_df.columns
