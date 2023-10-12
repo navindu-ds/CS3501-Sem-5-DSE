@@ -53,4 +53,14 @@ def handlingOutliers(df, stdev_num):
 processed_df = handlingZeros(avg_run_df)
 processed_df = handlingOutliers(processed_df,3)
 
-print(processed_df.columns[1:-2])
+# Get the list of integer column names (segments)
+segment_columns = processed_df.columns[1:-2]
+
+# Initialize the MinMaxScaler
+scaler = MinMaxScaler()
+
+# Loop through each segment column and normalize it
+for segment in segment_columns:
+    processed_df[segment] = scaler.fit_transform(processed_df[segment].values.reshape(-1, 1))
+
+print(processed_df)
