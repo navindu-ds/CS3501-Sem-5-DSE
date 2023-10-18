@@ -156,7 +156,7 @@ final_cols = ['date', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 'temp',
 merged_df = merged_df[final_cols]
 
 # file location to save Dataset
-filename = 'avg_run_dir' + str(direction) + '.csv'
+filename = 'avg_run_'+ str(time_step) +'min_dir' + str(direction) + '.csv'
 processed_data_file = os.path.join(dataSet_location, filename)
 
 merged_df.to_csv(processed_data_file,index=False)
@@ -215,7 +215,7 @@ processed_df = handlingZeros(pivoted_df)
 processed_df = handlingOutliers(processed_df,3)
 
 # file location of the Saved Dataset
-filename2 = 'processed_running_dir' + str(direction) + '.csv'
+filename2 = 'processed_running_' + str(time_step) + 'min_dir' + str(direction) + '.csv'
 processed_data_file = os.path.join(dataSet_location, filename2)
 
 processed_df.to_csv(processed_data_file,index=False)

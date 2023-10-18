@@ -10,7 +10,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 current_folder = (os.path.abspath(''))
 dataSet_location = os.path.join(current_folder,'Datasets')
-avgRunFile = os.path.join(dataSet_location,'avg_run_dir1.csv')
+avgRunFile = os.path.join(dataSet_location,'avg_run_15min_dir1.csv')
 
 # dataframe of average running times for each segement for each time slot in history
 avg_run_df = pd.read_csv(avgRunFile)
