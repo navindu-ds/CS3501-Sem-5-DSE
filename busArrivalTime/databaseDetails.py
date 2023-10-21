@@ -1,7 +1,7 @@
 database = {
         "host": "localhost",
         "user": "root",
-        "password": "password",
+        "password": "2919",
         "database": "bus_arrival_time"
 }
 
