@@ -111,7 +111,10 @@ busses_new = busses_new[mask]
 busses_new['date'] = pd.to_datetime(busses_new['date'])
 
 # Create a boolean mask to filter rows with dates on or after 10/1/2022
-date_mask = busses_new['date'] >= '2022-10-01'
+# date_mask = busses_new['date'] >= '2022-10-01'
+
+# for test dataset for demonstrations
+date_mask = busses_new['date'] < '2022-10-01' 
 
 # Create the train and test dataframes
 busses_train = busses_new[~date_mask]
@@ -157,64 +160,70 @@ final_cols = ['date', 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112
 merged_df = merged_df[final_cols]
 
 # file location to save Dataset
-filename = 'avg_dwell_' + str(time_step) + 'min_dir' + str(direction) + '.csv'
+# filename = 'avg_dwell_' + str(time_step) + 'min_dir' + str(direction) + '.csv'
+
+# file name for test data
+filename = 'test_dwell_'+ str(time_step) +'min_dir' + str(direction) + '.csv'
+
 processed_data_file = os.path.join(dataSet_location, filename)
 
 merged_df.to_csv(processed_data_file,index=False)
 
-# Get the list of integer column names (bus stops)
-bus_stop_columns = pivoted_df.columns
+################################################################################################
 
-# Initialize the MinMaxScaler
-scaler = MinMaxScaler()
+# # Get the list of integer column names (bus stops)
+# bus_stop_columns = pivoted_df.columns
 
-# Loop through each stop column and normalize it
-for stop in bus_stop_columns:
-    pivoted_df[stop] = scaler.fit_transform(pivoted_df[stop].values.reshape(-1, 1))
+# # Initialize the MinMaxScaler
+# scaler = MinMaxScaler()
 
-pivoted_df = pivoted_df.reset_index()
-pivoted_df['date'] = pivoted_df.apply(lambda x: pd.datetime.combine(x['date'], x['arrival_time']), axis=1)
-pivoted_df = pivoted_df.drop("arrival_time",axis=1)
+# # Loop through each stop column and normalize it
+# for stop in bus_stop_columns:
+#     pivoted_df[stop] = scaler.fit_transform(pivoted_df[stop].values.reshape(-1, 1))
 
-def handlingZeros(df):
-    df['date'] = pd.to_datetime(df['date'])
-    df['weekday'] = df['date'].dt.dayofweek
-    df['time'] = df['date'].dt.time
+# pivoted_df = pivoted_df.reset_index()
+# pivoted_df['date'] = pivoted_df.apply(lambda x: pd.datetime.combine(x['date'], x['arrival_time']), axis=1)
+# pivoted_df = pivoted_df.drop("arrival_time",axis=1)
 
-    # Loop over each stop column
-    for col in df.columns[1:-2]:
-        # Group by weekday and time slot
-        grouped = df.groupby(['weekday', 'time'])
+# def handlingZeros(df):
+#     df['date'] = pd.to_datetime(df['date'])
+#     df['weekday'] = df['date'].dt.dayofweek
+#     df['time'] = df['date'].dt.time
 
-        # Define a function to apply to each group
-        def replace_zeros(group):
-            nonzero_mean = group[group != 0].mean()
-            if pd.notnull(nonzero_mean):
-                return group.replace(0, nonzero_mean)
-            else:
-                return group
+#     # Loop over each stop column
+#     for col in df.columns[1:-2]:
+#         # Group by weekday and time slot
+#         grouped = df.groupby(['weekday', 'time'])
 
-        # Apply the function to each group in the specific segment column
-        df[col] = grouped[col].transform(replace_zeros)
+#         # Define a function to apply to each group
+#         def replace_zeros(group):
+#             nonzero_mean = group[group != 0].mean()
+#             if pd.notnull(nonzero_mean):
+#                 return group.replace(0, nonzero_mean)
+#             else:
+#                 return group
 
-    return df
+#         # Apply the function to each group in the specific segment column
+#         df[col] = grouped[col].transform(replace_zeros)
 
-def handlingOutliers(df, stdev_num):
-    # Assuming 'df' is your DataFrame
-    for col in df.columns:
-        if np.issubdtype(df[col].dtype, np.number):  # check if column is numeric
-            mean = df[col].mean()
-            std = df[col].std()
-            median = df[col].median()
-            outliers = (df[col] - mean).abs() > stdev_num*std
-            df.loc[outliers, col] = median
-    return df
+#     return df
 
-processed_df = handlingZeros(pivoted_df)
-processed_df = handlingOutliers(processed_df,3)
+# def handlingOutliers(df, stdev_num):
+#     # Assuming 'df' is your DataFrame
+#     for col in df.columns:
+#         if np.issubdtype(df[col].dtype, np.number):  # check if column is numeric
+#             mean = df[col].mean()
+#             std = df[col].std()
+#             median = df[col].median()
+#             outliers = (df[col] - mean).abs() > stdev_num*std
+#             df.loc[outliers, col] = median
+#     return df
 
-# file location of the Saved Dataset
-filename2 = 'processed_dwell_' + str(time_step) + 'min_dir' + str(direction) + '.csv'
-processed_data_file = os.path.join(dataSet_location, filename2)
+# processed_df = handlingZeros(pivoted_df)
+# processed_df = handlingOutliers(processed_df,3)
 
-processed_df.to_csv(processed_data_file,index=False)
+# # file location of the Saved Dataset
+# filename2 = 'processed_dwell_' + str(time_step) + 'min_dir' + str(direction) + '.csv'
+# processed_data_file = os.path.join(dataSet_location, filename2)
+
+# processed_df.to_csv(processed_data_file,index=False)
