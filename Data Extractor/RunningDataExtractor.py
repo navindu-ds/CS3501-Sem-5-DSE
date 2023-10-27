@@ -33,6 +33,7 @@ def getAvgRuntimeWithSegment(dataframe, time_step,start_time,end_time,min):
     
     # Convert the 'date' and 'start_time' columns to datetime objects
     dataframe['end_time'] = pd.to_datetime(dataframe['end_time'])
+    dataframe['start_time'] = pd.to_datetime(dataframe['start_time'])
     # Set the start and end times for the time window
     start_time = pd.to_datetime(start_time).time()
     end_time = pd.to_datetime(end_time).time()
@@ -44,7 +45,7 @@ def getAvgRuntimeWithSegment(dataframe, time_step,start_time,end_time,min):
     for date in dataframe['date'].unique():
         # Filter the rows for the current date
         df_date = dataframe[dataframe['date'] == date]
-        df_date.loc[:, 'end_time'] = df_date['end_time'].dt.time  # Use .loc to modify the original DataFrame
+        df_date.loc[:, 'start_time'] = df_date['start_time'].dt.time  # Use .loc to modify the original DataFrame
         date = date + pd.Timedelta(minutes=min)
         # Create a time range for the current date with the specified time step
         time_range = pd.date_range(date, date + pd.Timedelta(days=1), freq=f'{time_step}T')
@@ -54,7 +55,7 @@ def getAvgRuntimeWithSegment(dataframe, time_step,start_time,end_time,min):
             # Check if the start time is within the specified time window
             if start.time() >= start_time and start.time() < end_time:
                 # Filter the rows for the current time window
-                mask = (df_date['end_time'] >= start.time()) & (df_date['end_time'] < end.time())
+                mask = (df_date['start_time'] >= start.time()) & (df_date['start_time'] < end.time())
                 df_time_window = df_date[mask]
                 # Calculate the average run time for each segment in the current time window
                 avg_run_time = df_time_window.groupby('segment')['run_time_in_seconds'].mean().reset_index()
@@ -111,10 +112,10 @@ busses_new = busses_new[mask]
 busses_new['date'] = pd.to_datetime(busses_new['date'])
 
 # Create a boolean mask to filter rows with dates on or after 10/1/2022
-# date_mask = busses_new['date'] >= '2022-10-01'
+date_mask = busses_new['date'] >= '2022-10-01'
 
 # for test dataset for demonstrations
-date_mask = busses_new['date'] < '2022-10-01' 
+# date_mask = busses_new['date'] < '2022-10-01' 
 
 # Create the train and test dataframes
 busses_train = busses_new[~date_mask]
@@ -160,7 +161,11 @@ merged_df = merged_df[final_cols]
 
 # file location to save Dataset
 # filename = 'avg_run_'+ str(time_step) +'min_dir' + str(direction) + '.csv'
-filename = 'test_run_'+ str(time_step) +'min_dir' + str(direction) + '.csv'
+filename = f"avg_run{int(min/5)+1}_{time_step}min_dir{direction}.csv"
+
+# file name for test data
+# filename = 'test_run_'+ str(time_step) +'min_dir' + str(direction) + '.csv'
+
 processed_data_file = os.path.join(dataSet_location, filename)
 
 merged_df.to_csv(processed_data_file,index=False)

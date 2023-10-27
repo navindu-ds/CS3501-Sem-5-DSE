@@ -111,10 +111,10 @@ busses_new = busses_new[mask]
 busses_new['date'] = pd.to_datetime(busses_new['date'])
 
 # Create a boolean mask to filter rows with dates on or after 10/1/2022
-# date_mask = busses_new['date'] >= '2022-10-01'
+date_mask = busses_new['date'] >= '2022-10-01'
 
 # for test dataset for demonstrations
-date_mask = busses_new['date'] < '2022-10-01' 
+# date_mask = busses_new['date'] < '2022-10-01' 
 
 # Create the train and test dataframes
 busses_train = busses_new[~date_mask]
@@ -161,9 +161,10 @@ merged_df = merged_df[final_cols]
 
 # file location to save Dataset
 # filename = 'avg_dwell_' + str(time_step) + 'min_dir' + str(direction) + '.csv'
+filename = f"avg_dwell{int(min/5)+1}_{time_step}min_dir{direction}.csv"
 
 # file name for test data
-filename = 'test_dwell_'+ str(time_step) +'min_dir' + str(direction) + '.csv'
+# filename = 'test_dwell_'+ str(time_step) +'min_dir' + str(direction) + '.csv'
 
 processed_data_file = os.path.join(dataSet_location, filename)
 
