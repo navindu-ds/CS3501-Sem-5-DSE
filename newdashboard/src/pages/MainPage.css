@@ -1,0 +1,382 @@
+/*FOOTER*/
+.footer-container {
+    background-color: #333;
+    color: #FFFFFF;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    /* padding-top: 0.5px; */
+}
+
+.footer-h3 {
+    margin-top: 0px;
+    padding-top: 5px;
+}
+.background {
+    height: 100vh;
+    background-color: #f2f2f2;
+}
+
+.dashboard-title {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 20px;
+    color: black;
+    font-family: sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.dashboard-title h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    padding-left: 50px;
+}
+
+.dashboard-icon {
+    margin-right: 10px;
+}
+
+.kandy-digana-container {
+    padding-left: 50px;
+}
+
+.kandy-digana-card {
+    background-color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    width: 820px;
+    height: 420px;
+}
+
+/* Main Content Styles */
+.main-content {
+    padding-left: 100px;
+}
+
+.card {
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 16px 16px 16px 16px;
+    padding: 1rem;
+    width: 1050px;
+    height: 500px;
+}
+
+/* Toggle Buttons */
+.toggle-btn:hover {
+    background-color: #777777;
+    transition: 0.25s ease-out;
+}
+
+.toggle-btn.active {
+    background-color: #39b7ed;
+    color: white;
+}
+
+.dashboard-title {
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.card-container {
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    width: 1035px;
+    height: 480px;
+    position: relative;
+}
+
+.toggle-buttons {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.toggle-btn {
+    border: none;
+    background-color: #ddd;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.map-container {
+    margin-top: 10px;
+}
+
+.availability-card {
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    width: 300px;
+    height: 480px;
+    position: relative;
+    margin-left: 100px;
+    margin-bottom: 80px;
+}
+
+.adjust {
+    display: flex;
+    column-gap: 20px;
+    margin-top: 50px;
+    margin-left: -50px;
+}
+
+.card-header {
+    font-weight: bold;
+    font-size: 19px;
+    text-align: center;
+    margin-bottom: 10PX;
+    background-color: #b1b1b1;
+    border-radius: 8px 8px 8px 8px;
+    height: 30px;
+}
+
+.card-text {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -15px;
+}
+
+.card-subheader {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+.card-subheader2 {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -3px;
+}
+
+.bus-availability {
+    width: 200px;
+    height: 150px;
+    background-color: #D49797;
+    border-radius: 16px 16px 16px 16px;
+    margin: auto;
+    margin-bottom: 20px;
+    display: grid;
+    place-items: center;
+}
+
+/*Making the bus icons blink*/
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.blinking-icon {
+    animation: blink 1s linear infinite;
+}
+
+.parent-container {
+    display: flex;
+    justify-content: center;
+    /* Center children horizontally */
+    align-items: flex-start;
+    /* Center children vertically */
+    height: 100vh;
+    /* Take full viewport height */
+}
+
+.widget-parent {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f2f2f2;
+}
+
+.widget-card {
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    width: 1050px;
+    height: 700px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    display: flex;
+    margin-bottom: 50px;
+}
+
+.new-graph {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.blinking {
+    animation: blink-animation 1s steps(1, start) infinite;
+}
+
+@keyframes blink-animation {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.stop-names {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 17px;
+    margin-right: 20px;
+    }
+    
+    .mapview-parent {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f2f2f2;
+        margin-top: -40px;
+    }
+    
+    .mapview-container {
+        display: flex;
+        height: 500px;
+        width: 1000px;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .leaflet-routing-geocoder,
+    .leaflet-routing-container-hide {
+        display: none !important;
+    }
+    
+    .bus-route-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        /* Ensures the button stays on top */
+        background-color: #28a745;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+    }
+    
+    .bus-route-btn:hover {
+        background-color: #65ff7c;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    }
+    
+    .bus-stop-btn {
+        position: absolute;
+        top: 40px;
+        right: 10px;
+        z-index: 1000;
+        /* Ensures the button stays on top */
+        background-color: #28a745;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+    }
+    
+    .bus-stop-btn:hover {
+        background-color: #65ff7c;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    }
+    
+    .map-kandy-btn {
+        position: absolute;
+        top: 70px;
+        right: 10px;
+        z-index: 1000;
+        /* Ensures the button stays on top */
+        background-color: #28a745;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+    }
+    
+    .map-kandy-btn:hover {
+        background-color: #65ff7c;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    }
+    
+    .map-digana-btn {
+        position: absolute;
+        top: 100px;
+        right: 10px;
+        z-index: 1000;
+        /* Ensures the button stays on top */
+        background-color: #28a745;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+    }
+    
+    .map-digana-btn:hover {
+        background-color: #65ff7c;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    }
+    
+    .map-card {
+        background-color: white;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        width: 1050px;
+        height: 530px;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        display: flex;
+    }
+    
+    .change-direction-btn {
+        background-color: #28a745;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+        font-size: 20px;
+    }
+    
+    .change-direction-btn:hover {
+        background-color: #65ff7c;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
