@@ -9,10 +9,10 @@ from handleGPS import getGPSData, getLocations
 from busArrivalTime.models import ArrivalTimes
 
 
-def getPredictions(segment,start_time):
-    return generatePredictions(segment,start_time)
+def getPredictions(segment,start_time, run, dwell):
+    return generatePredictions(segment,start_time, run, dwell)
 
-def addRecord(startTime, endTime):
+def addRecord(startTime, endTime, run, dwell):
     dataset = getLocations()
     dataset.dropna(inplace=True)
     dataset['date'] = pd.to_datetime(dataset['date'])
@@ -43,7 +43,7 @@ def addRecord(startTime, endTime):
     if len(filtered_rows) > 0:
         print(filtered_rows)
 
-        arrivalTimes = getPredictions(first_segment,startTime)
+        arrivalTimes = getPredictions(first_segment,startTime, run, dwell)
 
         for index, row in filtered_rows.iterrows():
             latitude,longitude = getGPSData(row['deviceid'],startTime)
@@ -57,7 +57,7 @@ def addRecord(startTime, endTime):
                 arrival_time_data[f'{stop}'] = time
             ArrivalTimes.objects.create(**arrival_time_data)
 
-def deleteRecord(startTime, endTime):
+def deleteRecord(startTime, endTime, run, dwell):
     dataset = getLocations()
     dataset.dropna(inplace=True)
     dataset['date'] = pd.to_datetime(dataset['date'])
@@ -92,7 +92,7 @@ def deleteRecord(startTime, endTime):
         ArrivalTimes.objects.filter(trip_id__in=trip_ids_to_delete).delete()
 
 
-def updateRecord(startTime, endTime):
+def updateRecord(startTime, endTime, run, dwell):
     dataset = getLocations()
     dataset.dropna(inplace=True)
     dataset['date'] = pd.to_datetime(dataset['date'])
@@ -130,7 +130,7 @@ def updateRecord(startTime, endTime):
                 'latitude': latitude,
                 'longitude': longitude,
             }
-            arrivalTimes = getPredictions(row['segment'],startTime)
+            arrivalTimes = getPredictions(row['segment'],startTime, run, dwell)
             for stop, time in arrivalTimes.items():
                 arrival_time_data[f'{stop}'] = time
             ArrivalTimes.objects.filter(trip_id=row['trip_id']).update(**arrival_time_data)
