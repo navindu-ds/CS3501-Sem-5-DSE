@@ -1,3 +1,0 @@
-https://github.com/cure-lab/ltsf-linear
-https://github.com/MAZiqing/FEDformer
-https://github.com/QData/spacetimeformer
